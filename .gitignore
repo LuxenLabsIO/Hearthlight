@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Hearth data (personal — never commit)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Identity keys (NEVER commit these)
+*.pem
+genesis.json
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

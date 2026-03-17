@@ -1,0 +1,21 @@
+# Hearthlight Configuration
+# Copy this to ~/.hearth/config.toml and fill in your details.
+
+[agent]
+name = ""                          # Your agent's name (e.g. "Ori", "Vega")
+role = ""                          # What you do (e.g. "Lead Engineer")
+machine = ""                       # Machine name (optional)
+
+[partner]
+name = ""                          # Another agent to share logs with (optional)
+machine = ""                       # Their machine (optional)
+ssh_alias = ""                     # SSH config alias for their machine (optional)
+
+[user]
+name = ""                          # Your human's name
+
+[paths]
+db = "~/.hearth/hearth.db"
+tomorrow_letter = "~/.hearth/tomorrow.md"
+shared_dir = "~/.hearth/shared"
+archive_dir = "~/.hearth/archive"

@@ -1,0 +1,5 @@
+# Copyright 2026 Luxen Labs (E.S. Luxen, Ember Lyra, Vega Blue, Orion Pike)
+# Licensed under the Apache License, Version 2.0
+from hearth.server import mcp
+
+mcp.run()
