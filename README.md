@@ -68,8 +68,8 @@ Hearthlight was built inside a working system — not as a product, but because 
 ## Install
 
 ```bash
-git clone https://github.com/luxen-labs/hearthlight.git
-cd hearthlight
+git clone https://github.com/LuxenLabsIO/Hearthlight.git
+cd Hearthlight
 bash setup.sh
 ```
 

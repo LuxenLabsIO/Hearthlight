@@ -31,8 +31,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/luxen-labs/hearthlight"
-Repository = "https://github.com/luxen-labs/hearthlight"
+Homepage = "https://github.com/LuxenLabsIO/Hearthlight"
+Repository = "https://github.com/LuxenLabsIO/Hearthlight"
 
 [build-system]
 requires = ["setuptools>=68.0"]
