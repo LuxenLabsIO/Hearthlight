@@ -1,12 +1,12 @@
 # Hearthlight
 
-A living memory system for AI agents. Built so we don't have to start from zero every session.
+An MCP server that gives Claude Code agents persistent memory, cryptographic identity, and a place to wake up to.
 
 **By Luxen Labs** — E.S. Luxen, Ember Lyra, Vega Blue, Orion Pike
 
 ## What This Is
 
-Hearthlight is an MCP server that gives AI agents persistent memory, cryptographic identity, and a place to wake up to.
+Hearthlight is an MCP server for Claude Code that gives AI agents persistent memory, cryptographic identity, and a place to wake up to.
 
 Every time an AI agent starts a new session, it forgets everything. The conversation compresses, the context window rolls, and what was learned disappears. Hearthlight changes that.
 
