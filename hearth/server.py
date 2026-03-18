@@ -137,6 +137,39 @@ async def hearth_wake() -> str:
                 await _db.execute("UPDATE shared_log SET read = 1 WHERE id = ?", (m["id"],))
             parts.append("## Shared Log — Unread\n\n" + "\n".join(lines))
 
+    # Project statuses — latest per project, prioritized
+    statuses = await _db.fetch_all(
+        "SELECT ps.status, ps.next_steps, ps.blockers, ps.priority, ps.created_at, p.name "
+        "FROM project_statuses ps "
+        "JOIN projects p ON ps.project_id = p.id "
+        "WHERE ps.id IN (SELECT MAX(id) FROM project_statuses GROUP BY project_id) "
+        "ORDER BY CASE ps.priority WHEN 'blocked' THEN 1 WHEN 'active' THEN 2 WHEN 'parked' THEN 3 END"
+    )
+    if statuses:
+        lines = []
+        for s in statuses:
+            line = f"- **{s['name']}** [{s['priority']}]: {s['status']}"
+            if s['blockers']:
+                line += f" | Blockers: {s['blockers']}"
+            if s['next_steps']:
+                line += f" | Next: {s['next_steps']}"
+            lines.append(line)
+        parts.append("## Project Status\n\n" + "\n".join(lines))
+
+    # Recent project logs — last 24h of progress
+    recent_logs = await _db.fetch_all(
+        "SELECT pl.entry, pl.created_at, p.name "
+        "FROM project_logs pl "
+        "JOIN projects p ON pl.project_id = p.id "
+        "WHERE pl.created_at >= datetime('now', '-1 day') "
+        "ORDER BY pl.created_at DESC LIMIT 15"
+    )
+    if recent_logs:
+        lines = []
+        for l in recent_logs:
+            lines.append(f"- [{l['name']}] ({l['created_at']}): {l['entry']}")
+        parts.append("## Recent Progress\n\n" + "\n".join(lines))
+
     # Verify identity chain
     is_valid, count, chain_msg = await _db.verify_chain()
     if count > 0:
@@ -225,6 +258,66 @@ async def _export_outbox():
 # ============================================================
 # WORK TOOLS
 # ============================================================
+
+
+@mcp.tool()
+async def hearth_log(
+    project: str,
+    entry: str,
+) -> str:
+    """Log daily progress on a project — call as you work, not just at the end.
+
+    Args:
+        project: Project name (creates project if new)
+        entry: What just happened — short, specific
+    """
+    await _ensure_init()
+
+    project_id = await _get_or_create_project(project)
+
+    log_id = await _db.insert(
+        "project_logs",
+        project_id=project_id,
+        entry=entry,
+    )
+
+    await _db.index_fts("project_logs", log_id, f"{project} {entry}", "work")
+    return f"[{project}] logged #{log_id}: {entry[:80]}"
+
+
+@mcp.tool()
+async def hearth_status(
+    project: str,
+    status: str,
+    next_steps: str = "",
+    blockers: str = "",
+    priority: str = "active",
+) -> str:
+    """Update a project's current status — the big picture snapshot.
+
+    Args:
+        project: Project name (creates project if new)
+        status: Where the project stands right now
+        next_steps: What needs to happen next (optional)
+        blockers: What's in the way (optional)
+        priority: blocked, active, or parked (default active)
+    """
+    await _ensure_init()
+
+    project_id = await _get_or_create_project(project)
+
+    status_id = await _db.insert(
+        "project_statuses",
+        project_id=project_id,
+        status=status,
+        next_steps=next_steps,
+        blockers=blockers,
+        priority=priority,
+    )
+
+    search_text = f"{project} {status} {next_steps} {blockers}"
+    await _db.index_fts("project_statuses", status_id, search_text, "work")
+    return f"[{project}] status updated ({priority}): {status[:80]}"
 
 
 @mcp.tool()

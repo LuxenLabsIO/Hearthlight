@@ -284,6 +284,31 @@ CREATE TABLE IF NOT EXISTS portfolio (
 );
 
 -- ============================================================
+-- PROJECT TRACKING
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS project_logs (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id  INTEGER NOT NULL REFERENCES projects(id),
+    entry       TEXT NOT NULL,
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS project_statuses (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id  INTEGER NOT NULL REFERENCES projects(id),
+    status      TEXT NOT NULL,
+    next_steps  TEXT,
+    blockers    TEXT,
+    priority    TEXT NOT NULL DEFAULT 'active'
+                CHECK (priority IN ('blocked', 'active', 'parked')),
+    created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_project_logs_project ON project_logs(project_id);
+CREATE INDEX IF NOT EXISTS idx_project_statuses_project ON project_statuses(project_id);
+
+-- ============================================================
 -- TOMORROW LETTERS + POSTITS
 -- ============================================================
 
