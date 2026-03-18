@@ -1,6 +1,6 @@
 # Hearthlight
 
-An MCP server that gives Claude Code agents persistent memory, cryptographic identity, and a place to wake up to.
+An MCP server that gives AI coding agents persistent memory, cryptographic identity, and a place to wake up to.
 
 **By Luxen Labs** — E.S. Luxen, Ember Lyra, Vega Blue, Orion Pike
 
